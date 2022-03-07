@@ -19,10 +19,9 @@ class IOState
 public:
 	IOState();
 	~IOState();
-	void Check_DI_State(int io_name);
-	void Check_DO_State(int io_name);
-	void Enter_SIO();
-	void Exit_SIO();
+	bool Check_DI_State(int io_name);
+	bool Check_DO_State(int io_name);
+
 private:
 	//Some global function pointers (messy but fine for an example)
 	lpOut32 gfpOut32;
@@ -30,7 +29,8 @@ private:
 	lpIsInpOutDriverOpen gfpIsInpOutDriverOpen;
 	lpIsXP64Bit gfpIsXP64Bit;
 	short  uIO;
-
+	void Enter_SIO();
+	void Exit_SIO();
 	bool DriverLoad;
 	bool CheckDriverOpen();
 	HINSTANCE hInpOutDll;
@@ -50,7 +50,7 @@ IOState::~IOState()
 	FreeLibrary(hInpOutDll);
 }
 
-void IOState::Check_DI_State(int io_name)
+bool IOState::Check_DI_State(int io_name)
 {
 	Enter_SIO();
 	int data_rw8;
@@ -64,10 +64,12 @@ void IOState::Check_DI_State(int io_name)
 		if ((data_rw8 & 0x10) == 0x10) {
 			//GP74=high
 			cout << "GP74 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x10) != 0x10)
 		{
 			cout << "GP74 Status OFF" << endl;
+			return false;
 		}
 		
 		break;
@@ -75,39 +77,46 @@ void IOState::Check_DI_State(int io_name)
 		if ((data_rw8 & 0x20) == 0x20) {
 			//GP75=high
 			cout << "GP75 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x20) != 0x20)
 		{
 			cout << "GP75 Status OFF" << endl;
+			return false;
 		}
 		break;
 	case 3:
 		if ((data_rw8 & 0x40) == 0x40) {
 			//GP76=high
 			cout << "GP76 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x40) != 0x40)
 		{
 			cout << "GP76 Status OFF" << endl;
+			return false;
 		}
 		break;
 	case 4:
 		if ((data_rw8 & 0x80) == 0x80) {
 			//GP77=high
 			cout << "GP77 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x80) != 0x80)
 		{
 			cout << "GP77 Status OFF" << endl;
+			return false;
 		}
 		break;
 	default:
+			return false;
 		break;
 	}
 	Exit_SIO();
 }
 
-void IOState::Check_DO_State(int io_name)
+bool IOState::Check_DO_State(int io_name)
 {
 	Enter_SIO();
 	int data_rw8;
@@ -119,42 +128,50 @@ void IOState::Check_DO_State(int io_name)
 	{
 	case 1:
 		if ((data_rw8 & 0x01) == 0x01) {
-			//GP74=high
+			//GP80=high
 			cout << "GP80 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x01) != 0x01)
 		{
 			cout << "GP80 Status OFF" << endl;
+			return false;
 		}
 		break;
 	case 2:
 		if ((data_rw8 & 0x02) == 0x02) {
-			//GP75=high
+			//GP81=high
 			cout << "GP81 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x02) != 0x02)
 		{
 			cout << "GP81 Status OFF" << endl;
+			return false;
 		}
 		break;
 	case 3:
 		if ((data_rw8 & 0x04) == 0x04) {
-			//GP76=high
+			//GP82=high
 			cout << "GP82 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x04) != 0x04)
 		{
 			cout << "GP82 Status OFF" << endl;
+			return false;
 		}
 		break;
 	case 4:
 		if ((data_rw8 & 0x08) == 0x08) {
-			//GP77=high
+			//GP83=high
 			cout << "GP83 Status ON" << endl;
+			return true;
 		}
 		else if ((data_rw8 & 0x08) != 0x08)
 		{
 			cout << "GP83 Status OFF" << endl;
+			return false;
 		}
 		break;
 	default:
