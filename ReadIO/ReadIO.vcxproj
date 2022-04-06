@@ -142,6 +142,7 @@
     <ClInclude Include="IOState.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IoState.cpp" />
     <ClCompile Include="ReadIO_Test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
